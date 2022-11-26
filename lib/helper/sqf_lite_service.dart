@@ -1,3 +1,5 @@
+import 'package:offline_storage/response/base_response.dart';
+import 'package:offline_storage/response/jake_list_response.dart';
 import 'package:offline_storage/response/response.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -26,11 +28,13 @@ class SqfLiteService {
     );
   }
 
-  Future<List<JakeWharton>> getFromDb() async {
+  Future<BaseResponseModel<JakeListresponse>> getFromDb() async {
     final db = await initializeDb();
 
     final data = await db.query("Jake");
-    return data.map((e) => JakeWharton.fromJson(e)).toList();
+    return BaseResponseModel(
+      body: JakeListresponse.fromJson(data),
+    );
   }
 
   String createColoums(Map<dynamic, dynamic> map) {
