@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:offline_storage/constants/global_variable.dart';
 import 'package:offline_storage/cubit/jake_bloc_cubit.dart';
+import 'package:offline_storage/cubit/jake_bloc_state.dart';
+import 'package:offline_storage/helper/error_handling.dart';
 import 'package:offline_storage/helper/permission.dart';
 import 'package:offline_storage/utils/nothing.dart';
 
@@ -12,17 +15,21 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  final _scrollController = ScrollController();
   @override
   void initState() {
     Permission().checkInternet().then((value) {
       if (value) {
-        context.read<JakeBlocCubit>().getJake(1);
+        context.read<JakeBlocCubit>().getJake();
       } else {
-        print("No Intenet Connection");
         context.read<JakeBlocCubit>().getJakeFromDb();
       }
     });
-
+    _scrollController.addListener(() {
+      if (_scrollController.position.extentAfter <= 0) {
+        context.read<JakeBlocCubit>().getMoreJake();
+      }
+    });
     super.initState();
   }
 
@@ -34,27 +41,32 @@ class _MainPageState extends State<MainPage> {
       ),
       body: BlocBuilder<JakeBlocCubit, JakeBlocState>(
         builder: (context, state) {
-          if (state is JakeBlocError) {
-            return Text(state.error);
+          if (state.networkState == NetworkState.failed) {
+            final error = ErrorHandling.getErrorMessage(state.errorResponse!);
+            return Center(
+              child: Text(error),
+            );
           }
-          if (state is JakeBlocLoading || state is JakeBlocInitial) {
+          if (state.networkState == NetworkState.loading) {
             return const Center(
               child: CircularProgressIndicator(),
             );
           }
-          if (state is JakeBlocCompleted) {
-            if (state.jakeWharton.isEmpty) {
-              return const Center(
-                child: Text("No Data Found"),
-              );
-            }
+          if (state.networkState == NetworkState.loaded) {
             return ListView.builder(
+              controller: _scrollController,
               shrinkWrap: true,
-              itemCount: state.jakeWharton.length,
+              itemCount: state.responseModel?.body.jake.length,
               itemBuilder: (context, index) {
+                final jake = state.responseModel?.body.jake ?? [];
+                if (index == jake.length - 1 && state.isLoadingMore) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
                 return Column(
                   children: [
-                    Text(state.jakeWharton[index].subscriptionUrl.toString())
+                    Text(jake[index].subscriptionUrl.toString()),
                   ],
                 );
               },

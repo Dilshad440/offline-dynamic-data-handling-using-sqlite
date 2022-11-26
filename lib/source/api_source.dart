@@ -1,17 +1,21 @@
 import 'package:offline_storage/interceptors/rest_client.dart';
-import 'package:offline_storage/response/response.dart';
+import 'package:offline_storage/response/base_response.dart';
+import 'package:offline_storage/response/jake_list_response.dart';
 
 class ApiSource {
   final _client = RestClient();
 
-  Future<List<JakeWharton>> fetchData(int page) async {
+  Future<BaseResponseModel<JakeListResponse>> fetchData(int page) async {
     final response = await _client.dio.get(
       "/users/JakeWharton/repos",
       queryParameters: {
         "page": page,
       },
     );
-    final data = response.data as List;
-    return data.map<JakeWharton>((e) => JakeWharton.fromJson(e)).toList();
+    return BaseResponseModel(
+      body: JakeListResponse.fromJson(response.data),
+      message: response.statusMessage,
+      status: response.statusCode,
+    );
   }
 }
