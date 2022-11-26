@@ -1,8 +1,8 @@
 import 'package:offline_storage/response/base_response.dart';
 import 'package:offline_storage/response/jake_list_response.dart';
 import 'package:offline_storage/response/response.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 
 class SqfLiteService {
   Future<Database> initializeDb({JakeWharton? data}) async {
@@ -28,12 +28,12 @@ class SqfLiteService {
     );
   }
 
-  Future<BaseResponseModel<JakeListresponse>> getFromDb() async {
+  Future<BaseResponseModel<JakeListResponse>> getFromDb() async {
     final db = await initializeDb();
 
     final data = await db.query("Jake");
     return BaseResponseModel(
-      body: JakeListresponse.fromJson(data),
+      body: JakeListResponse.fromJson(data),
     );
   }
 

@@ -5,7 +5,7 @@ import 'package:offline_storage/response/jake_list_response.dart';
 class ApiSource {
   final _client = RestClient();
 
-  Future<BaseResponseModel<JakeListresponse>> fetchData(int page) async {
+  Future<BaseResponseModel<JakeListResponse>> fetchData(int page) async {
     final response = await _client.dio.get(
       "/users/JakeWharton/repos",
       queryParameters: {
@@ -13,7 +13,7 @@ class ApiSource {
       },
     );
     return BaseResponseModel(
-      body: JakeListresponse.fromJson(response.data),
+      body: JakeListResponse.fromJson(response.data),
       message: response.statusMessage,
       status: response.statusCode,
     );

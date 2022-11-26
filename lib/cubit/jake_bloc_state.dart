@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:offline_storage/constants/global_variable.dart';
 import 'package:offline_storage/response/base_response.dart';
@@ -6,7 +5,7 @@ import 'package:offline_storage/response/jake_list_response.dart';
 
 class JakeBlocState<T> extends Equatable {
   final NetworkState? networkState;
-  final BaseResponseModel<JakeListresponse>? responseModel;
+  final BaseResponseModel<JakeListResponse>? responseModel;
   final bool isLoadingMore;
   final T? errorResponse;
 
@@ -19,7 +18,7 @@ class JakeBlocState<T> extends Equatable {
 
   JakeBlocState copyWith({
     final NetworkState? networkState,
-    final BaseResponseModel<JakeListresponse>? responseModel,
+    final BaseResponseModel<JakeListResponse>? responseModel,
     final bool? isLoadingMore,
     final T? errorResponse,
   }) {

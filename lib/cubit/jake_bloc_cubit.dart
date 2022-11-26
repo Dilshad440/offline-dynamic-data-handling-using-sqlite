@@ -11,7 +11,7 @@ class JakeBlocCubit extends Cubit<JakeBlocState> {
   JakeBlocCubit() : super(const JakeBlocState());
 
   final _apiService = ApiSource();
-  final _sqfLiteServies = SqfLiteService();
+  final _sqfLiteServices = SqfLiteService();
   JakeBlocState? jakeBlocState;
 
   final List<JakeWharton> jakeList = [];
@@ -27,7 +27,7 @@ class JakeBlocCubit extends Cubit<JakeBlocState> {
         responseModel: jake,
       ));
       for (var j in jake.body.jake) {
-        _sqfLiteServies.insertIntoDb(j);
+        _sqfLiteServices.insertIntoDb(j);
       }
     } catch (e) {
       if (e is DioError) {
@@ -52,7 +52,7 @@ class JakeBlocCubit extends Cubit<JakeBlocState> {
         responseModel: state.responseModel,
       ));
       for (var j in jake.body.jake) {
-        _sqfLiteServies.insertIntoDb(j);
+        _sqfLiteServices.insertIntoDb(j);
       }
     } catch (e) {
       if (e is DioError) {
@@ -69,7 +69,7 @@ class JakeBlocCubit extends Cubit<JakeBlocState> {
   void getJakeFromDb() async {
     emit(state.copyWith(networkState: NetworkState.loading));
     try {
-      final offlineData = await _sqfLiteServies.getFromDb();
+      final offlineData = await _sqfLiteServices.getFromDb();
       emit(state.copyWith(
         networkState: NetworkState.loaded,
         responseModel: offlineData,
